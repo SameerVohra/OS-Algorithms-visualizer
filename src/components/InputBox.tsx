@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SelectAlgo from "./SelectAlgo";
 
 interface Process {
     pid: string;
@@ -33,9 +34,8 @@ const InputBox: React.FC = () => {
     return (
         <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white">
             {err && <h1 className="text-red-500 text-xl mb-4">{err}</h1>}
-            <h1 className="text-3xl font-bold mb-8">Enter Process</h1>
         
-            <form onSubmit={handleFormSubmit} className="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-lg">
+            <form onSubmit={handleFormSubmit} className="w-full max-w-md bg-gray-800 p-6 rounded-3xl shadow-lg">
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2" htmlFor="arrival">
                         Set Arrival Time
@@ -71,9 +71,9 @@ const InputBox: React.FC = () => {
                 </button>
             </form>
 
-            <table className="mt-8 w-full max-w-md text-center bg-gray-700 rounded-lg shadow-lg overflow-hidden">
+            <table className="mt-5 w-full max-w-lg text-center bg-gray-700 rounded-3xl overflow-hidden border-white border-t">
                 <thead>
-                    <tr className="bg-gray-800 text-gray-300">
+                    <tr className="bg-gray-500 text-white">
                         <th className="px-4 py-2">Process ID</th>
                         <th className="px-4 py-2">Arrival Time</th>
                         <th className="px-4 py-2">Burst Time</th>
@@ -81,7 +81,7 @@ const InputBox: React.FC = () => {
                 </thead>
                 <tbody>
                     {processes.map((proc, index) => (
-                        <tr key={index} className= {`border-t border-gray-700 ${index%2==0?'bg-gray-700':'bg-gray-500'}`}>
+                        <tr key={index} className= {`border-t border-white ${index%2==0?'bg-gray-700':'bg-gray-600'} text-`}>
                             <td className="px-4 py-2">{proc.pid}</td>
                             <td className="px-4 py-2">{proc.arrival}</td>
                             <td className="px-4 py-2">{proc.burst}</td>
@@ -89,6 +89,9 @@ const InputBox: React.FC = () => {
                     ))}
                 </tbody>
             </table>
+            <div className="mt-10">
+                <SelectAlgo/>
+            </div>
         </div>
     );
 };
