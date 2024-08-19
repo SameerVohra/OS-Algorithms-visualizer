@@ -5,6 +5,9 @@ interface Process {
     pid: string;
     burst: number;
     arrival: number;
+    completion?: number;
+    tat?: number;
+    wt?: number;
 }
 
 const InputBox: React.FC = () => {
@@ -18,7 +21,7 @@ const InputBox: React.FC = () => {
         if (storedProcesses) {
             setProcesses(JSON.parse(storedProcesses));
         }
-    }, []);
+    }, );
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -40,11 +43,23 @@ const InputBox: React.FC = () => {
         setArrival(undefined);
     };
 
+    const handleDelete = (pid: string) => {
+        const updatedProcesses = processes.filter(p => p.pid !== pid);
+        const updatedProcessesWithNewPids = updatedProcesses.map((p, index) => ({
+            ...p,
+            pid: `P${index+1}`
+        }));
+        setProcesses(updatedProcessesWithNewPids);
+        localStorage.setItem("proc", JSON.stringify(updatedProcessesWithNewPids));
+    };
+
     return (
-        <div className="flex flex-row items-center justify-center text-white md:gap-20">
-            {err && <h1 className="text-red-500 text-xl mb-4">{err}</h1>}
+        <>
+         {err && <h1 className="text-red-500 text-xl mb-4">{err}</h1>}
         
-            <form onSubmit={handleFormSubmit} className="w-full max-w-md bg-gray-800 p-6 rounded-3xl shadow-lg">
+            <div className="flex flex-row items-center justify-center text-white md:gap-20">
+           
+            <form onSubmit={handleFormSubmit} className="w-full max-w-xl bg-gray-800 p-6 rounded-3xl shadow-xl">
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2" htmlFor="arrival">
                         Set Arrival Time
@@ -87,6 +102,9 @@ const InputBox: React.FC = () => {
                             <th className="px-4 py-2">Process ID</th>
                             <th className="px-4 py-2">Arrival Time</th>
                             <th className="px-4 py-2">Burst Time</th>
+                            <th className="px-4 py-2">Completition Time</th>
+                            <th className="px-4 py-2">Turn Around Time</th>
+                            <th className="px-4 py-2">Waiting Time</th>
                             <th className="px-4 py-2">Action</th>
                         </tr>
                     </thead>
@@ -96,16 +114,15 @@ const InputBox: React.FC = () => {
                                 <td className="px-4 py-2">{proc.pid}</td>
                                 <td className="px-4 py-2">{proc.arrival}</td>
                                 <td className="px-4 py-2">{proc.burst}</td>
+                                <td className="px-4 py-2">{proc?.completion}</td>
+                                <td className="px-4 py-2">{proc?.tat}</td>
+                                <td className="px-4 py-2">{proc?.wt}</td>
                                 <td className="px-4 py-2">
                                     <img
                                         src={icon}
                                         alt="Close icon"
                                         className="cursor-pointer w-6 h-6 inline"
-                                        onClick={() => {
-                                            const updatedProcesses = processes.filter(p => p.pid !== proc.pid);
-                                            setProcesses(updatedProcesses);
-                                            localStorage.setItem("proc", JSON.stringify(updatedProcesses));
-                                        }}
+                                        onClick={() => handleDelete(proc.pid)}
                                     />
                                 </td>
                             </tr>
@@ -114,6 +131,7 @@ const InputBox: React.FC = () => {
                 </table>
             )}
         </div>
+        </>
     );
 };
 

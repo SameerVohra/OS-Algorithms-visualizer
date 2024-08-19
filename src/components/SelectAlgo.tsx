@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { FCFS } from "../algorithms/FCFS";
+import GanttChart from "./GanttChart";
 
 const SelectAlgo: React.FC = () => {
     const [algo, setAlgo] = useState<string>("FCFS");
+    const [makeGantt, setMakeGantt] = useState<boolean>(false);
+
     localStorage.setItem("algo", algo);
 
     const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
+        setMakeGantt(false);
         localStorage.setItem("algo", e.target.value);
         setAlgo(e.target.value);
     };
@@ -16,6 +20,7 @@ const SelectAlgo: React.FC = () => {
         switch (algo) {
             case "FCFS":
                 FCFS();
+                setMakeGantt(true);
                 break;
         }
     };
@@ -36,6 +41,8 @@ const SelectAlgo: React.FC = () => {
                 >
                     RUN
                 </button>
+
+               {makeGantt && <GanttChart/>}
             </div>
         </>
     );
