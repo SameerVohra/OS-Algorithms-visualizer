@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import SelectAlgo from "./SelectAlgo";
+import React, { useState, useEffect } from "react";
+import icon from "../icons8-close.svg";
 
 interface Process {
     pid: string;
@@ -13,26 +13,35 @@ const InputBox: React.FC = () => {
     const [arrival, setArrival] = useState<number>();
     const [err, setErr] = useState<string>("");
 
+    useEffect(() => {
+        const storedProcesses = localStorage.getItem("proc");
+        if (storedProcesses) {
+            setProcesses(JSON.parse(storedProcesses));
+        }
+    }, []);
+
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErr("");
 
         if (burst !== undefined && arrival !== undefined) {
-            const newProcess: Process = { pid: `P${processes.length}`, burst: burst || 0, arrival: arrival || 0 };
-            setProcesses([...processes, newProcess]);
+            const newProcess: Process = {
+                pid: `P${processes.length + 1}`,
+                burst: burst,
+                arrival: arrival
+            };
+            const updatedProcesses = [...processes, newProcess];
+            setProcesses(updatedProcesses);
+            localStorage.setItem("proc", JSON.stringify(updatedProcesses));
         } else {
-            setErr("Enter a value");
+            setErr("Please enter both Arrival Time and Burst Time");
         }
         setBurst(undefined);
         setArrival(undefined);
-
-        processes.forEach((process) => {
-            console.log(process);
-        });
     };
 
     return (
-        <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center text-white">
+        <div className="flex flex-row items-center justify-center text-white md:gap-20">
             {err && <h1 className="text-red-500 text-xl mb-4">{err}</h1>}
         
             <form onSubmit={handleFormSubmit} className="w-full max-w-md bg-gray-800 p-6 rounded-3xl shadow-lg">
@@ -71,27 +80,39 @@ const InputBox: React.FC = () => {
                 </button>
             </form>
 
-            <table className="mt-5 w-full max-w-lg text-center bg-gray-700 rounded-3xl overflow-hidden border-white border-t">
-                <thead>
-                    <tr className="bg-gray-500 text-white">
-                        <th className="px-4 py-2">Process ID</th>
-                        <th className="px-4 py-2">Arrival Time</th>
-                        <th className="px-4 py-2">Burst Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {processes.map((proc, index) => (
-                        <tr key={index} className= {`border-t border-white ${index%2==0?'bg-gray-700':'bg-gray-600'} text-`}>
-                            <td className="px-4 py-2">{proc.pid}</td>
-                            <td className="px-4 py-2">{proc.arrival}</td>
-                            <td className="px-4 py-2">{proc.burst}</td>
+            {processes.length > 0 && (
+                <table className="mt-5 w-full max-w-lg text-center bg-gray-700 rounded-3xl overflow-hidden border-white border-t">
+                    <thead>
+                        <tr className="bg-gray-500 text-white">
+                            <th className="px-4 py-2">Process ID</th>
+                            <th className="px-4 py-2">Arrival Time</th>
+                            <th className="px-4 py-2">Burst Time</th>
+                            <th className="px-4 py-2">Action</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div className="mt-10">
-                <SelectAlgo/>
-            </div>
+                    </thead>
+                    <tbody>
+                        {processes.map((proc, index) => (
+                            <tr key={index} className={`border-t border-white ${index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-600'}`}>
+                                <td className="px-4 py-2">{proc.pid}</td>
+                                <td className="px-4 py-2">{proc.arrival}</td>
+                                <td className="px-4 py-2">{proc.burst}</td>
+                                <td className="px-4 py-2">
+                                    <img
+                                        src={icon}
+                                        alt="Close icon"
+                                        className="cursor-pointer w-6 h-6 inline"
+                                        onClick={() => {
+                                            const updatedProcesses = processes.filter(p => p.pid !== proc.pid);
+                                            setProcesses(updatedProcesses);
+                                            localStorage.setItem("proc", JSON.stringify(updatedProcesses));
+                                        }}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };
