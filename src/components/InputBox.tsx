@@ -96,7 +96,7 @@ const InputBox: React.FC = () => {
             </form>
 
             {processes.length > 0 && (
-                <table className="mt-5 w-full max-w-lg text-center bg-gray-700 rounded-3xl overflow-hidden border-white border-t">
+                <table className="w-full max-w-2xl text-center bg-gray-700 rounded-3xl overflow-hidden border-t">
                     <thead>
                         <tr className="bg-gray-500 text-white">
                             <th className="px-4 py-2">Process ID</th>
@@ -105,7 +105,7 @@ const InputBox: React.FC = () => {
                             <th className="px-4 py-2">Completition Time</th>
                             <th className="px-4 py-2">Turn Around Time</th>
                             <th className="px-4 py-2">Waiting Time</th>
-                            <th className="px-4 py-2">Action</th>
+                            <th className="px-4 py-2">Close</th>
                         </tr>
                     </thead>
                     <tbody>

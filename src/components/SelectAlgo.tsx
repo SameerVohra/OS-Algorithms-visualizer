@@ -17,6 +17,7 @@ const SelectAlgo: React.FC = () => {
 
     const handleRun = () => {
         console.log(algo);
+        setMakeGantt(false);
         switch (algo) {
             case "FCFS":
                 FCFS();
