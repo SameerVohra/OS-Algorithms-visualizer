@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FCFS, SJF } from "../algorithms/algos";    
+import { FCFS, SJF, SRJF } from "../algorithms/algos";    
 import GanttChart from "./GanttChart";
 
 const SelectAlgo: React.FC = () => {
@@ -30,6 +30,13 @@ const SelectAlgo: React.FC = () => {
                 setMakeGantt(true);
                 setGanttKey(ganttKey+1);
                 break;
+
+            case "SRJF":
+                SRJF();
+                setMakeGantt(true);
+                setGanttKey(ganttKey+1);
+                break;
+
         }
     };
 
