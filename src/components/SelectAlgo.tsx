@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { FCFS } from "../algorithms/FCFS";
+import { FCFS, SJF } from "../algorithms/algos";    
 import GanttChart from "./GanttChart";
 
 const SelectAlgo: React.FC = () => {
     const [algo, setAlgo] = useState<string>("FCFS");
     const [makeGantt, setMakeGantt] = useState<boolean>(false);
+    const [ganttKey, setGanttKey] = useState<number>(0);
 
     localStorage.setItem("algo", algo);
 
@@ -16,12 +17,18 @@ const SelectAlgo: React.FC = () => {
     };
 
     const handleRun = () => {
-        console.log(algo);
         setMakeGantt(false);
         switch (algo) {
             case "FCFS":
                 FCFS();
                 setMakeGantt(true);
+                setGanttKey(ganttKey+1);
+                break;
+            
+            case "SJF":
+                SJF();
+                setMakeGantt(true);
+                setGanttKey(ganttKey+1);
                 break;
         }
     };
@@ -43,7 +50,8 @@ const SelectAlgo: React.FC = () => {
                     RUN
                 </button>
 
-               {makeGantt && <GanttChart/>}
+               {makeGantt && <GanttChart key={ganttKey}/>} {/* Passing key so that the gantt chart get refresh when clicked on run */}
+               
             </div>
         </>
     );
