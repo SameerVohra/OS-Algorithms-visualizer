@@ -15,8 +15,6 @@ export const SRJF = () => {
     if (processesJson) {
         const proc: Process[] = JSON.parse(processesJson);
 
-        console.log("Original Processes:", proc);
-
         const remainingBurst = new Map<string, number>();
         proc.forEach(p => remainingBurst.set(p.pid, p.burst));
 
@@ -41,8 +39,8 @@ export const SRJF = () => {
             }
 
             processQueue.sort((a, b) => (remainingBurst.get(a.pid) || 0) - (remainingBurst.get(b.pid) || 0));
-            const currentProcess = processQueue.shift()!;
-            
+
+            const currentProcess = processQueue[0];
             currentTime++;
             const newBurst = (remainingBurst.get(currentProcess.pid) || 0) - 1;
             remainingBurst.set(currentProcess.pid, newBurst);
@@ -51,17 +49,12 @@ export const SRJF = () => {
                 currentProcess.completion = currentTime;
                 currentProcess.tat = currentProcess.completion - currentProcess.arrival;
                 currentProcess.wt = currentProcess.tat - currentProcess.burst;
+                processQueue.shift();
                 isCompleted++;
             }
-
-            processQueue = processQueue.map(p => ({
-                ...p,
-                remainingBurst: remainingBurst.get(p.pid)
-            }));
         }
 
         console.log("Processes after SRJF calculations:", proc);
-
         localStorage.setItem("proc", JSON.stringify(proc));
     }
 };

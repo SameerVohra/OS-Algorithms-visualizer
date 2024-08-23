@@ -29,7 +29,7 @@ export const SJF = () => {
                 }
             }
 
-            processQueue.sort((a, b) => a.burst - b.burst);
+            processQueue.sort((a, b) => a.arrival - b.arrival);
 
             const currentProcess = processQueue.shift()!;
             currentProcess.completion = currentTime + currentProcess.burst;
