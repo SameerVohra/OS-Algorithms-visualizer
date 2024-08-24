@@ -5,56 +5,64 @@ interface Process {
     completion?: number;
     tat?: number;
     wt?: number;
+    remainingBurst?: number;
+}
+
+interface srjfArr {
+    time: number;
+    pid: string;
 }
 
 export const SRJF = () => {
-    console.log("Running SRJF");
+    const processes = localStorage.getItem("proc");
+    if (processes) {
+        let proc: Process[] = JSON.parse(processes);
+        let srjfArr: srjfArr[] = [];
 
-    const processesJson = localStorage.getItem("proc");
+        proc.forEach(p => p.remainingBurst = p.burst);
 
-    if (processesJson) {
-        const proc: Process[] = JSON.parse(processesJson);
+        const procQueue: Process[] = [...proc];
+        let time = 0;
+        let numTasks = 0;
 
-        const remainingBurst = new Map<string, number>();
-        proc.forEach(p => remainingBurst.set(p.pid, p.burst));
+        procQueue.sort((a, b) => a.arrival - b.arrival);
 
-        proc.sort((a, b) => a.arrival - b.arrival);
+        while (numTasks < proc.length) {
+            const arrivedProcesses = procQueue.filter(p => p.arrival <= time && p.remainingBurst && p.remainingBurst > 0);
+            if (arrivedProcesses.length > 0) {
+                arrivedProcesses.sort((a, b) => (a.remainingBurst || 0) - (b.remainingBurst || 0));
 
-        let currentTime = 0;
-        let processQueue: Process[] = [];
-        let index = 0;
-        let isCompleted = 0;
+                const currentProcess = arrivedProcesses[0];
+                const currentIdx = procQueue.indexOf(currentProcess);
 
-        while (isCompleted < proc.length) {
-            while (index < proc.length && proc[index].arrival <= currentTime) {
-                processQueue.push(proc[index]);
-                index++;
-            }
+                procQueue[currentIdx].remainingBurst! -= 1;
+                time += 1;
 
-            if (processQueue.length === 0) {
-                if (index < proc.length) {
-                    currentTime = proc[index].arrival;
-                    continue;
+                const tmpArr = { pid: procQueue[currentIdx].pid, time };
+                srjfArr.push(tmpArr);
+
+                if (procQueue[currentIdx].remainingBurst === 0) {
+                    procQueue[currentIdx].completion = time;
+                    procQueue[currentIdx].tat = procQueue[currentIdx].completion - procQueue[currentIdx].arrival;
+                    const originalBurst = proc.find(p => p.pid === procQueue[currentIdx].pid)?.burst || 0;
+                    procQueue[currentIdx].wt = procQueue[currentIdx].tat - originalBurst;
+                    numTasks += 1;
+
+                    const originalProcIdx = proc.findIndex(p => p.pid === procQueue[currentIdx].pid);
+                    if (originalProcIdx !== -1) {
+                        proc[originalProcIdx].completion = procQueue[currentIdx].completion;
+                        proc[originalProcIdx].tat = procQueue[currentIdx].tat;
+                        proc[originalProcIdx].wt = procQueue[currentIdx].wt;
+                    }
                 }
-            }
-
-            processQueue.sort((a, b) => (remainingBurst.get(a.pid) || 0) - (remainingBurst.get(b.pid) || 0));
-
-            const currentProcess = processQueue[0];
-            currentTime++;
-            const newBurst = (remainingBurst.get(currentProcess.pid) || 0) - 1;
-            remainingBurst.set(currentProcess.pid, newBurst);
-
-            if (newBurst === 0) {
-                currentProcess.completion = currentTime;
-                currentProcess.tat = currentProcess.completion - currentProcess.arrival;
-                currentProcess.wt = currentProcess.tat - currentProcess.burst;
-                processQueue.shift();
-                isCompleted++;
+            } else {
+                time += 1;
             }
         }
 
-        console.log("Processes after SRJF calculations:", proc);
+        localStorage.setItem("srjfArr", JSON.stringify(srjfArr));
         localStorage.setItem("proc", JSON.stringify(proc));
+
+        console.log(proc);
     }
 };

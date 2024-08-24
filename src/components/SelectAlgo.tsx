@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { FCFS, SJF, SRJF } from "../algorithms/algos";    
 import GanttChart from "./GanttChart";
+import GanttChartSRJF from "./GantChartSRJF";
 
 const SelectAlgo: React.FC = () => {
     const [algo, setAlgo] = useState<string>("FCFS");
     const [makeGantt, setMakeGantt] = useState<boolean>(false);
     const [ganttKey, setGanttKey] = useState<number>(0);
-    const [quantTime, setQuantTime] = useState<number>(undefined);
+    const [quantTime, setQuantTime] = useState<number | undefined>(undefined);
     const [isQuant, setIsQuant] = useState<boolean>(false);
 
     localStorage.setItem("algo", algo);
@@ -27,19 +28,19 @@ const SelectAlgo: React.FC = () => {
             case "FCFS":
                 FCFS();
                 setMakeGantt(true);
-                setGanttKey(ganttKey+1);
+                setGanttKey(ganttKey + 1);
                 break;
             
             case "SJF":
                 SJF();
                 setMakeGantt(true);
-                setGanttKey(ganttKey+1);
+                setGanttKey(ganttKey + 1);
                 break;
 
             case "SRJF":
                 SRJF();
                 setMakeGantt(true);
-                setGanttKey(ganttKey+1);
+                setGanttKey(ganttKey + 1);
                 break;
 
         }
@@ -56,9 +57,7 @@ const SelectAlgo: React.FC = () => {
                     <option value="RR">RR</option>
                 </select>
                 {isQuant && 
-                <input type="number" placeholder="Enter Quant Time" className="rounded-xl border-2 border-black text-center" value={quantTime}onChange={(e)=>{
-                    setQuantTime(+e.target.value)
-                }}></input>}
+                <input type="number" placeholder="Enter Quant Time" className="rounded-xl border-2 border-black text-center" value={quantTime} onChange={(e) => setQuantTime(+e.target.value)} />}
                 <button
                     className="border-2 border-black px-5 py-2 rounded-xl bg-blue-500 hover:bg-blue-700 text-md font-bold transition duration-200 hover:border-gray-500 text-gray-300 hover:text-white"
                     onClick={handleRun}
@@ -66,8 +65,7 @@ const SelectAlgo: React.FC = () => {
                     RUN
                 </button>
 
-               {makeGantt && <GanttChart key={ganttKey}/>} {/* Passing key so that the gantt chart get refresh when clicked on run */}
-               
+                {makeGantt && (algo === "SRJF" ? <GanttChartSRJF key={ganttKey} /> : <GanttChart key={ganttKey} />)}
             </div>
         </>
     );

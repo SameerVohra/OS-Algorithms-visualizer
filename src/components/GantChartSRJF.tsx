@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+interface srjfProc {
+    pid: string;
+    time: number;
+}
+
 interface Proc {
     pid: string;
     burst: number;
@@ -9,8 +14,9 @@ interface Proc {
     wt: number;
 }
 
-const GanttChart: React.FC = () => {
+const GanttChartSRJF: React.FC = () => {
     const [process, setProcess] = useState<Proc[]>([]);
+    const [srjfProcess, setSrjfProc] = useState<srjfProc[]>([]);
     const [avgWt, setAvgWt] = useState<number>(0);
     const [avgTAT, setAvgTAT] = useState<number>(0);
 
@@ -28,20 +34,27 @@ const GanttChart: React.FC = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const processes = localStorage.getItem("srjfArr");
+        if (processes) {
+            const srjf: srjfProc[] = JSON.parse(processes);
+            setSrjfProc(srjf);
+        }
+    }, []);
+
     return (
         <div className="bg-gray-900 rounded-lg shadow-lg p-6 w-full max-w-6xl mt-8">
             <h1 className="text-white text-2xl font-semibold text-center mb-6">Gantt Chart</h1>
             <div className="flex justify-center items-center w-full h-auto px-4 py-4 overflow-x-auto space-x-4">
-                {process.map((proc, idx) => (
+                {srjfProcess.map((proc, idx) => (
                     <div
                         key={idx}
                         className="bg-blue-600 text-center text-white rounded-lg shadow-md flex flex-col justify-between h-full min-w-[50px] p-2"
-                        style={{ width: `${proc.burst * 70}px` }}
+                        style={{ width: `${proc.time * 60}px` }}
                     >
                         <p className="font-bold text-lg">{proc.pid}</p>
                         <div className="bg-gray-800 text-sm mt-2 p-1 rounded-md">
-                            <span>Start: {idx === 0 ? proc.arrival : process[idx - 1].completion} ms</span>
-                            <span className="block">End: {proc.completion} ms</span>
+                            <span>{proc.time} ms</span>
                         </div>
                     </div>
                 ))}
@@ -54,4 +67,4 @@ const GanttChart: React.FC = () => {
     );
 };
 
-export default GanttChart;
+export default GanttChartSRJF;
