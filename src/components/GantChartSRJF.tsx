@@ -50,7 +50,7 @@ const GanttChartSRJF: React.FC = () => {
                     <div
                         key={idx}
                         className="bg-blue-600 text-center text-white rounded-lg shadow-md flex flex-col justify-between h-full min-w-[50px] p-2"
-                        style={{ width: `${proc.time * 60}px` }}
+                        style={{ width: `${proc.time * 70}px` }}
                     >
                         <p className="font-bold text-lg">{proc.pid}</p>
                         <div className="bg-gray-800 text-sm mt-2 p-1 rounded-md">
