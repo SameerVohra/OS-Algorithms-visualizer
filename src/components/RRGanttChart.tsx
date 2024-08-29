@@ -16,7 +16,6 @@ interface Proc {
 }
 
 const RRGanttChart: React.FC = () => {
-    const [process, setProcess] = useState<Proc[]>([]);
     const [rrGantt, setRrGantt] = useState<RrGantt[]>([]);
     const [avgWt, setAvgWt] = useState<number>(0);
     const [avgTAT, setAvgTAT] = useState<number>(0);
@@ -27,7 +26,6 @@ const RRGanttChart: React.FC = () => {
         if (storedProcesses && storedGantt) {
             const procs: Proc[] = JSON.parse(storedProcesses);
             const ganttData: RrGantt[] = JSON.parse(storedGantt);
-            setProcess(procs);
             setRrGantt(ganttData);
 
             const totalWt: number = procs.reduce((acc, pro) => acc + pro.wt, 0);

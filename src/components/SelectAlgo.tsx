@@ -10,7 +10,6 @@ const SelectAlgo: React.FC = () => {
     const [ganttKey, setGanttKey] = useState<number>(0);
     const [quantTime, setQuantTime] = useState<number | undefined>(undefined);
     const [isQuant, setIsQuant] = useState<boolean>(false);
-    const [isRRGantt, setIsRRGantt] = useState<boolean>(false);
 
     localStorage.setItem("algo", algo);
 
@@ -21,11 +20,9 @@ const SelectAlgo: React.FC = () => {
         setAlgo(e.target.value);
         if(e.target.value === "RR"){
             setIsQuant(true);
-            setIsRRGantt(true);
         }
         else{
             setIsQuant(false);
-            setIsRRGantt(false);
         }
     };
 

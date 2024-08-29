@@ -15,7 +15,6 @@ interface Proc {
 }
 
 const GanttChartSRJF: React.FC = () => {
-    const [process, setProcess] = useState<Proc[]>([]);
     const [srjfProcess, setSrjfProc] = useState<srjfProc[]>([]);
     const [avgWt, setAvgWt] = useState<number>(0);
     const [avgTAT, setAvgTAT] = useState<number>(0);
@@ -24,8 +23,6 @@ const GanttChartSRJF: React.FC = () => {
         const storedProcesses = localStorage.getItem("proc");
         if (storedProcesses) {
             const procs: Proc[] = JSON.parse(storedProcesses);
-            setProcess(procs);
-
             const totalWt: number = procs.reduce((acc, pro) => acc + pro.wt, 0);
             const totalTAT: number = procs.reduce((acc, pro) => acc + pro.tat, 0);
 
