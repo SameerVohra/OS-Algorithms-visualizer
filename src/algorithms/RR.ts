@@ -1,63 +1,70 @@
-interface Proc {
-    pid: string;
-    burst: number;
+interface Process {
+    pid: number;
     arrival: number;
+    burst: number;
+    remainingBurst: number;
     completion?: number;
     tat?: number;
     wt?: number;
-    remainingBurst?: number;
 }
 
-interface RrArr {
-    time: number;
+interface Gantt {
     pid: string;
+    start: number;
+    end: number;
 }
 
-export const RR = (quantTime: number) => {
-    if (isNaN(quantTime) || quantTime <= 0) return;
+export const RR = (quant: number) => {
+    const process = localStorage.getItem("proc");
+    if (process) {
+        const processes: Process[] = JSON.parse(process);
+        let sum = 0;
+        let count = 0;
+        let completedProcesses = 0;
+        let tat = 0;
+        let wt = 0;
+        const n = processes.length;
+        const ganttChart: Gantt[] = [];
 
-    const processes = localStorage.getItem("proc");
+        const temp: number[] = processes.map(p => p.burst);
 
-    if (processes) {
-        const process: Proc[] = JSON.parse(processes);
+        while (completedProcesses < n) {
+            for (let i = 0; i < n; i++) {
+                if (temp[i] > 0) {
+                    const start = sum;
 
-        process.forEach(p => p.remainingBurst = p.burst);
+                    if (temp[i] <= quant) {
+                        sum += temp[i];
+                        temp[i] = 0;
+                        count = 1;
+                    } else {
+                        temp[i] -= quant;
+                        sum += quant;
+                    }
 
-        const procQueue: Proc[] = [...process];
-        let numTasks: number = 0;
-        let time: number = 0;
+                    const end = sum;
+                    ganttChart.push({ pid: `${processes[i].pid}`, start, end });
 
-        procQueue.sort((a, b) => a.arrival - b.arrival);
-
-        while (numTasks < process.length) {
-            const arrivedProcesses = procQueue.filter(p => p.arrival <= time);
-            if (arrivedProcesses.length > 0) {
-                // Sort only the processes that are currently in the queue
-                arrivedProcesses.sort((a, b) => (a.remainingBurst || 0) - (b.remainingBurst || 0));
-
-                const currentProcess = arrivedProcesses[0];
-                const currIdx = procQueue.indexOf(currentProcess);
-
-                const timeSlice = Math.min(quantTime, procQueue[currIdx].remainingBurst || 0);
-                procQueue[currIdx].remainingBurst! -= timeSlice;
-                time += timeSlice;
-
-                if (procQueue[currIdx].remainingBurst! <= 0) {
-                    procQueue[currIdx].completion = time;
-                    procQueue[currIdx].tat = procQueue[currIdx].completion - procQueue[currIdx].arrival;
-                    const orgBurst = process.find(p => p.pid === procQueue[currIdx].pid)?.burst || 0;
-                    procQueue[currIdx].wt = procQueue[currIdx].tat - orgBurst;
-                    numTasks += 1;
+                    if (temp[i] === 0 && count === 1) {
+                        completedProcesses++;
+                        processes[i].completion = sum;
+                        processes[i].tat = sum - processes[i].arrival;
+                        processes[i].wt = processes[i].tat - processes[i].burst;
+                        wt += processes[i].wt;
+                        tat += processes[i].tat;
+                        count = 0;
+                    }
                 }
-            } else {
-                // No process has arrived, move time forward to the arrival of the next process
-                const nextProcessArrival = procQueue.find(p => p.arrival > time)?.arrival || time;
-                time = nextProcessArrival;
             }
         }
 
-        console.log(process);
+        console.log("Process No\tBurst Time\tTAT\tWaiting Time");
+        processes.forEach((p, i) => {
+            console.log(`Process No[${i + 1}]\t${p.burst}\t\t${p.tat}\t\t${p.wt}`);
+        });
+        localStorage.setItem("proc", JSON.stringify(processes));
+        localStorage.setItem("rrGantt", JSON.stringify(ganttChart));
+        
+        console.log("Gantt Chart:", ganttChart);
     }
-    console.log(quantTime);
-    console.log("Round Robin");
-}
+};

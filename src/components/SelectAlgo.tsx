@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FCFS, SJF, SRJF, RR } from "../algorithms/algos";    
 import GanttChart from "./GanttChart";
 import GanttChartSRJF from "./GantChartSRJF";
+import RRGanttChart from "./RRGanttChart";
 
 const SelectAlgo: React.FC = () => {
     const [algo, setAlgo] = useState<string>("FCFS");
@@ -9,6 +10,7 @@ const SelectAlgo: React.FC = () => {
     const [ganttKey, setGanttKey] = useState<number>(0);
     const [quantTime, setQuantTime] = useState<number | undefined>(undefined);
     const [isQuant, setIsQuant] = useState<boolean>(false);
+    const [isRRGantt, setIsRRGantt] = useState<boolean>(false);
 
     localStorage.setItem("algo", algo);
 
@@ -17,8 +19,14 @@ const SelectAlgo: React.FC = () => {
         setMakeGantt(false);
         localStorage.setItem("algo", e.target.value);
         setAlgo(e.target.value);
-        if(e.target.value === "RR") setIsQuant(true);
-        else setIsQuant(false);
+        if(e.target.value === "RR"){
+            setIsQuant(true);
+            setIsRRGantt(true);
+        }
+        else{
+            setIsQuant(false);
+            setIsRRGantt(false);
+        }
     };
 
     const handleRun = () => {
@@ -69,8 +77,8 @@ const SelectAlgo: React.FC = () => {
                 >
                     RUN
                 </button>
-
-                {makeGantt && (algo === "SRJF" ? <GanttChartSRJF key={ganttKey} /> : <GanttChart key={ganttKey} />)}
+                {makeGantt && algo==="RR" ? <RRGanttChart key={ganttKey}/> : 
+                makeGantt && (algo === "SRJF" ? <GanttChartSRJF key={ganttKey} /> : <GanttChart key={ganttKey} />)}
             </div>
         </>
     );
