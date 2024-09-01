@@ -11,7 +11,6 @@ const SelectAlgo: React.FC = () => {
   const [quantTime, setQuantTime] = useState<number | undefined>(undefined);
   const [isQuant, setIsQuant] = useState<boolean>(false);
 
-  // Handle algorithm selection
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedAlgo = e.target.value;
     setAlgo(selectedAlgo);
@@ -20,7 +19,6 @@ const SelectAlgo: React.FC = () => {
     localStorage.setItem("algo", selectedAlgo);
   };
 
-  // Handle RUN button click
   const handleRun = () => {
     setMakeGantt(false);
 
@@ -42,11 +40,11 @@ const SelectAlgo: React.FC = () => {
     }
 
     setMakeGantt(true);
-    setGanttKey((prevKey) => prevKey + 1); // Increment the key to force re-render
+    setGanttKey((prevKey) => prevKey + 1);
   };
 
   return (
-    <div className="flex items-center justify-center w-full p-6">
+    <div className="flex items-center justify-center w-full p-6 flex-col">
       <div className="flex flex-col m-10">
         <h1 className="text-3xl font-semibold text-gray-700 underline decoration-blue-500">
           {algo} Algorithm
