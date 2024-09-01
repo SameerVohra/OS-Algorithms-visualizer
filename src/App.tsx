@@ -6,18 +6,15 @@ import SelectAlgo from './components/SelectAlgo'
 function App() {
 
   return (
-    <>
-     <div className='min-h-screen bg-gray-800 flex items-center justify-center flex-col w-auto px-5 py-5 gap-2'>
-      { /*TODO: First make an input box,
-      take input and store in a temp storage of array
-      Run multiple algorithms on it and the input should not change until the user does so
-      Make a gantt chart too for the processes */}
+    
+    <div  className='w-full h-screen bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300'>
+      
+      <div className="flex-1 w-full h-full p-4 ">
+        <InputBox />
+        <SelectAlgo />
+      </div>
 
-      <InputBox/>
-      <SelectAlgo/>
-
-       </div>
-    </>
+    </div>
   )
 }
 
