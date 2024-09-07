@@ -95,7 +95,7 @@ const InputBox: React.FC = () => {
 
             {processes.length > 0 && (
                 <div className="w-full max-w-2xl overflow-x-auto">
-                    <table className="min-w-full bg-white rounded-xl shadow-md">
+                    <table className="min-w-full bg-white rounded-xl shadow-md text-center">
                         <thead>
                             <tr className="bg-indigo-500 text-white text-sm">
                                 <th className="px-4 py-2">Process ID</th>
