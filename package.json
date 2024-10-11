@@ -30,5 +30,17 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SameerVohra/OS-Algorithms-visualizer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SameerVohra/OS-Algorithms-visualizer/issues"
+  },
+  "homepage": "https://github.com/SameerVohra/OS-Algorithms-visualizer#readme"
 }
